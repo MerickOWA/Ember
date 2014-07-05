@@ -10,6 +10,7 @@ using namespace KennyKerr;
 using namespace KennyKerr::DirectWrite;
 using namespace KennyKerr::Direct2D;
 using namespace KennyKerr::Direct3D;
+using namespace KennyKerr::Dxgi;
 
 Color const COLOR_WHITE( 1.0f, 1.0f, 1.0f );
 Color const COLOR_SkyBlue( 0.529f, 0.808f, 0.922f );
@@ -19,6 +20,8 @@ class EmberApplication : public Application
 	TextFormat _textFormat;
 	SolidColorBrush _whiteBrush;
 	VertexShader _vertexShader;
+	InputLayout _inputLayout;
+	PixelShader _pixelShader;
 
 	void CreateDeviceIndependentResources() override
 	{
@@ -31,7 +34,20 @@ class EmberApplication : public Application
 
 		{
 			fileview file( "SimpleVS.cso" );
+
+			const InputElementDescription vertexDesc[] =
+			{
+				InputElementDescription{ Format::R32G32B32_FLOAT, "POSITION", 0, 0, 0 },
+				InputElementDescription{ Format::R32G32B32_FLOAT, "COLOR", 0, 0, 12 },
+			};
+
 			_vertexShader = _d3dDevice.CreateVertexShader( file.begin(), file.size() );
+			_inputLayout = _d3dDevice.CreateInputLayout( vertexDesc, _countof( vertexDesc ), file.begin(), file.size() );
+		}
+
+		{
+			fileview file( "SimplePS.cso" );
+			_pixelShader = _d3dDevice.CreatePixelShader( file.begin(), file.size() );
 		}
 	}
 
