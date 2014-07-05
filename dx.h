@@ -2628,7 +2628,7 @@ namespace KennyKerr
 			auto GetDxgiFactory() const->Dxgi::Factory2;
 
 			auto CreateTexture2D( TextureDescription2D const & description ) const->Texture2D;
-			auto CreateVertexShader() const->VertexShader;
+			auto CreateVertexShader( void const * bytecode, size_t length ) const->VertexShader;
 			auto GetImmediateContext() const->DeviceContext;
 			auto OpenSharedResource( HANDLE resource ) const->Dxgi::Surface;
 			auto OpenSharedResource( Dxgi::Resource const & resource ) const->Dxgi::Surface;
@@ -5661,6 +5661,18 @@ namespace KennyKerr
 			Texture2D result;
 
 			HR( (*this)->CreateTexture2D( description.Get(),
+				nullptr,
+				result.GetAddressOf() ) );
+
+			return result;
+		}
+
+		inline auto Device::CreateVertexShader( void const * bytecode, size_t length ) const -> VertexShader
+		{
+			VertexShader result;
+
+			HR( (*this)->CreateVertexShader( bytecode,
+				length,
 				nullptr,
 				result.GetAddressOf() ) );
 
