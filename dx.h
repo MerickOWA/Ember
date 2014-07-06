@@ -1530,6 +1530,32 @@ namespace KennyKerr
 			unsigned InstanceDataStepRate;
 		};
 
+		struct BufferDescription
+		{
+			KENNYKERR_DEFINE_STRUCT( BufferDescription, D3D11_BUFFER_DESC );
+
+			explicit BufferDescription( unsigned byteWidth = 0,
+																	BindFlag bindFlags = BindFlag::None,
+																	Usage usage = Usage::Default,
+																	CpuAccessFlag cpuAccessFlags = CpuAccessFlag::None,
+																	ResourceMiscFlag miscFlags = ResourceMiscFlag::None,
+																	unsigned structureByteStride = 0 ) :
+																	ByteWidth(byteWidth),
+																	Usage(usage),
+																	BindFlags(bindFlags),
+																	CPUAccessFlags(cpuAccessFlags),
+																	MiscFlags(miscFlags),
+																	StructureByteStride(structureByteStride)
+			{}
+
+			unsigned ByteWidth;
+			Usage Usage;
+			BindFlag BindFlags;
+			CpuAccessFlag CPUAccessFlags;
+			ResourceMiscFlag MiscFlags;
+			unsigned StructureByteStride;
+		};
+
 	} // Direct3D
 
 	namespace DirectComposition
@@ -2769,6 +2795,11 @@ namespace KennyKerr
 			void SetEvictionPriority( Dxgi::ResourcePriority priority ) const;
 		};
 
+		struct Buffer : Resource
+		{
+			KENNYKERR_DEFINE_CLASS( Buffer, Resource, ID3D11Buffer );
+		};
+
 		struct Texture2D : Resource
 		{
 			KENNYKERR_DEFINE_CLASS( Texture2D, Resource, ID3D11Texture2D );
@@ -2826,6 +2857,7 @@ namespace KennyKerr
 			auto AsMultiThread() const->MultiThread;
 			auto GetDxgiFactory() const->Dxgi::Factory2;
 
+			auto CreateBuffer( BufferDescription const &description ) const->Buffer;
 			auto CreateInputLayout( InputElementDescription const *elements, unsigned numElements, void const *bytecode, size_t bytecodeLength ) const->InputLayout;
 			auto CreatePixelShader( void const * bytecode, size_t bytecodeLength ) const->PixelShader;
 			auto CreateTexture2D( TextureDescription2D const & description ) const->Texture2D;
@@ -5879,6 +5911,17 @@ namespace KennyKerr
 		inline auto Device::GetDxgiFactory() const -> Dxgi::Factory2
 		{
 			return AsDxgi().GetAdapter().GetParent();
+		}
+
+		inline auto Device::CreateBuffer( BufferDescription const &description ) const -> Buffer
+		{
+			Buffer result;
+
+			HR( (*this)->CreateBuffer( reinterpret_cast<D3D11_BUFFER_DESC const *>(&description),
+				nullptr,
+				result.GetAddressOf() ) );
+
+			return result;
 		}
 
 		inline auto Device::CreateInputLayout(InputElementDescription const *elements, unsigned numElements, void const *bytecode, size_t bytecodeLength) const -> InputLayout
