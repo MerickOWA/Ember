@@ -141,9 +141,9 @@ class EmberApplication : public Application
 		XMStoreFloat4x4( &_constants.projection, XMMatrixTranspose( perspectiveMatrix ) );
 
 		// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
-		static const XMVECTORF32 eye = { 0.0f, 0.7f, 1.5f, 0.0f };
-		static const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 0.0f };
-		static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
+		const XMVECTORF32 eye = { 0.0f, 0.7f, 1.5f, 0.0f };
+		const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 0.0f };
+		const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
 
 		XMStoreFloat4x4( &_constants.view, XMMatrixTranspose( XMMatrixLookAtRH( eye, at, up ) ) );
 	}
@@ -160,7 +160,9 @@ class EmberApplication : public Application
 	void Draw()	override
 	{
 		_d2dContext.BeginDraw();
-		_d2dContext.Clear( COLOR_SKYBLUE );
+
+		_d3dContext.ClearRenderTargetView( _d3dRenderTargetView, COLOR_SKYBLUE );
+		_d3dContext.ClearDepthStencilView( _d3dDepthStencilView );
 
 		auto size = _d2dContext.GetSize();
 

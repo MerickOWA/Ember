@@ -507,6 +507,13 @@ namespace KennyKerr
 		};
 		DEFINE_ENUM_FLAG_OPERATORS( DSVFlag );
 
+		enum class ClearFlag
+		{
+			Depth = D3D11_CLEAR_DEPTH,
+			Stencil = D3D11_CLEAR_STENCIL,
+		};
+		DEFINE_ENUM_FLAG_OPERATORS( ClearFlag );
+
 	} // Direct3D
 
 	namespace DirectComposition
@@ -1648,11 +1655,10 @@ namespace KennyKerr
 																						unsigned firstArraySlice = 0,
 																						unsigned arraySize = -1,
 																						DSVFlag flags = DSVFlag::None )
+																						: Format(format),
+																						ViewDimension(viewDimension),
+																						Flags(flags)
 			{
-				Format = format;
-				ViewDimension = viewDimension;
-				Flags = flags;
-
 				switch ( viewDimension )
 				{
 				case DSVDimension::Texture1D:
@@ -1723,6 +1729,32 @@ namespace KennyKerr
 					unsigned ArraySize;;
 				} Texture2DMSArray;
 			};
+		};
+
+		struct ViewPort
+		{
+			KENNYKERR_DEFINE_STRUCT( ViewPort, D3D11_VIEWPORT );
+
+			explicit ViewPort( float topLeftX,
+												 float topLeftY,
+												 float width,
+												 float height,
+												 float minDepth = D3D11_MIN_DEPTH,
+												 float maxDepth = D3D11_MAX_DEPTH )
+												 : TopLeftX(topLeftX),
+												 TopLeftY(topLeftY),
+												 Width(width),
+												 Height(height),
+												 MinDepth(minDepth),
+												 MaxDepth(maxDepth)
+			{}
+
+			float TopLeftX;
+			float TopLeftY;
+			float Width;
+			float Height;
+			float MinDepth;
+			float MaxDepth;
 		};
 
 	} // Direct3D
@@ -3013,6 +3045,14 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_CLASS( DeviceContext, Details::Object, ID3D11DeviceContext );
 
+			void ClearDepthStencilView( DepthStencilView const &depthStencilView,
+																	ClearFlag clearFlags = ClearFlag::Depth | ClearFlag::Stencil,
+																	float depth = D3D11_MAX_DEPTH,
+																	unsigned char stencil = 0 ) const;
+
+			void ClearRenderTargetView( RenderTargetView const &renderTargetView,
+																	Color const &color ) const;
+
 			void Flush() const;
 
 			void DrawIndexed( unsigned indexCount,
@@ -3033,18 +3073,22 @@ namespace KennyKerr
 															 unsigned const * strides,
 															 unsigned const * offsets ) const;
 
+			void OMSetRenderTargets() const;
 			void OMSetRenderTargets( unsigned numViews,
-															 RenderTargetView const *renderTargetViews,
+															 RenderTargetView const * renderTargetViews,
 															 DepthStencilView depthStencilView ) const;
 
 			void PSSetShader( PixelShader const & pixelShader ) const;
+
+			void RSSetViewports( unsigned numViewports,
+													 ViewPort const * viewports ) const;
 
 			void UpdateSubresource( Resource & dstResource,
 															void const * srcData ) const;
 
 			void VSSetConstantBuffers( unsigned startSlot,
 																 unsigned numBuffers,
-																 Buffer const *constantBuffers ) const;
+																 Buffer const * constantBuffers ) const;
 
 			void VSSetShader( VertexShader const & vertexShader ) const;
 		};
@@ -6120,6 +6164,20 @@ namespace KennyKerr
 			return result;
 		}
 
+		inline void DeviceContext::ClearDepthStencilView( DepthStencilView const &depthStencilView,
+																											ClearFlag clearFlags,
+																											float depth,
+																											unsigned char stencil ) const
+		{
+			(*this)->ClearDepthStencilView( depthStencilView.Get(), static_cast<D3D11_CLEAR_FLAG>(clearFlags), depth, stencil );
+		}
+
+		inline void DeviceContext::ClearRenderTargetView( RenderTargetView const &renderTargetView,
+																											Color const &color ) const
+		{
+			(*this)->ClearRenderTargetView( renderTargetView.Get(), reinterpret_cast<FLOAT const *>(&color) );
+		}
+
 		inline void DeviceContext::Flush() const
 		{
 			(*this)->Flush();
@@ -6166,8 +6224,13 @@ namespace KennyKerr
 																	 offsets );
 		}
 
+		inline void DeviceContext::OMSetRenderTargets() const
+		{
+			(*this)->OMSetRenderTargets( 0, nullptr, nullptr );
+		}
+
 		inline void DeviceContext::OMSetRenderTargets( unsigned numViews,
-																									 RenderTargetView const *renderTargetViews,
+																									 RenderTargetView const * renderTargetViews,
 																									 DepthStencilView depthStencilView ) const
 		{
 			(*this)->OMSetRenderTargets( numViews,
@@ -6182,6 +6245,13 @@ namespace KennyKerr
 														0 );
 		}
 
+		inline void DeviceContext::RSSetViewports( unsigned numViewports,
+																							 ViewPort const * viewports ) const
+		{
+			(*this)->RSSetViewports( numViewports, reinterpret_cast<D3D11_VIEWPORT const *>(viewports) );
+		}
+
+
 		inline void DeviceContext::UpdateSubresource( Resource & dstResource,
 																									void const * srcData ) const
 		{
@@ -6195,7 +6265,7 @@ namespace KennyKerr
 
 		inline void DeviceContext::VSSetConstantBuffers( unsigned startSlot,
 																										 unsigned numBuffers,
-																										 Buffer const *constantBuffers ) const
+																										 Buffer const * constantBuffers ) const
 		{
 			(*this)->VSSetConstantBuffers( startSlot,
 																		 numBuffers,

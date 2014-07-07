@@ -25,6 +25,7 @@ int Application::Run( HINSTANCE hinst, LPCTSTR title )
 		InitializeDX();
 		Initialize();
 		OnDeviceAquired();
+		OnWindowChanged();
 		_initialized = true;
 
 		auto timer = high_resolution_clock{};
@@ -55,10 +56,6 @@ void Application::Exit( int exitCode )
 
 void Application::InitializeDX()
 {
-	auto windowRect = _window.GetClientRect();
-	auto windowWidth = static_cast<unsigned>(windowRect.right);
-	auto windowHeight = static_cast<unsigned>(windowRect.bottom);
-
 	_d3dDevice = Direct3D::CreateDevice();
 	_d3dContext = _d3dDevice.GetImmediateContext();
 
@@ -68,14 +65,6 @@ void Application::InitializeDX()
 	auto dxgiFactory = _d3dDevice.GetDxgiFactory();
 	_swapChain = dxgiFactory.CreateSwapChainForHwnd( _d3dDevice, _window.Get(), description );
 
-	//*** Create a render target, depth, and stencil view to bind to the D3D context's
-	_d3dRenderTargetView = _d3dDevice.CreateRenderTargetView( _swapChain );
-
-	auto depthStencil = _d3dDevice.CreateTexture2D( TextureDescription2D{ Dxgi::Format::D24_UNORM_S8_UINT, windowWidth, windowHeight, 1, 1, BindFlag::DepthStencil } );
-	_d3dDepthStencilView = _d3dDevice.CreateDepthStencilView( depthStencil, DepthStencilViewDescription{ DSVDimension::Texture2D } );
-
-	_d3dContext.OMSetRenderTargets( 1, &_d3dRenderTargetView, _d3dDepthStencilView );
-
 	_d2dFactory = Direct2D::CreateFactory();
 	_dwFactory = DirectWrite::CreateFactory();
 
@@ -84,14 +73,31 @@ void Application::InitializeDX()
 
 	_d2dDevice = _d2dFactory.CreateDevice( _d3dDevice );
 	_d2dContext = _d2dDevice.CreateDeviceContext();
-
-	_d2dContext.SetTarget( _d2dContext.CreateBitmapFromDxgiSurface( _swapChain ) );
 }
 
 void Application::OnWindowChanged()
 {
 	_d2dContext.SetTarget();
+	_d3dContext.OMSetRenderTargets();
+	_d3dRenderTargetView.Reset();
+	_d3dDepthStencilView.Reset();
+
 	_swapChain.ResizeBuffers();
+
+	auto windowRect = _window.GetClientRect();
+	auto windowWidth = static_cast<unsigned>(windowRect.right);
+	auto windowHeight = static_cast<unsigned>(windowRect.bottom);
+
+	//*** Create a render target, depth, and stencil view to bind to the D3D context's
+	_d3dRenderTargetView = _d3dDevice.CreateRenderTargetView( _swapChain );
+
+	auto depthStencil = _d3dDevice.CreateTexture2D( TextureDescription2D{ Dxgi::Format::D24_UNORM_S8_UINT, windowWidth, windowHeight, 1, 1, BindFlag::DepthStencil } );
+	_d3dDepthStencilView = _d3dDevice.CreateDepthStencilView( depthStencil, DepthStencilViewDescription{ DSVDimension::Texture2D } );
+
+	_d3dContext.OMSetRenderTargets( 1, &_d3dRenderTargetView, _d3dDepthStencilView );
+
+	_d3dContext.RSSetViewports( 1, &ViewPort{ 0, 0, static_cast<float>(windowWidth), static_cast<float>(windowHeight) } );
+
 	_d2dContext.SetTarget( _d2dContext.CreateBitmapFromDxgiSurface( _swapChain ) );
 }
 
