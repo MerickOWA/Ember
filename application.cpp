@@ -68,9 +68,13 @@ void Application::InitializeDX()
 	auto dxgiFactory = _d3dDevice.GetDxgiFactory();
 	_swapChain = dxgiFactory.CreateSwapChainForHwnd( _d3dDevice, _window.Get(), description );
 
+	//*** Create a render target, depth, and stencil view to bind to the D3D context's
 	_d3dRenderTargetView = _d3dDevice.CreateRenderTargetView( _swapChain );
 
 	auto depthStencil = _d3dDevice.CreateTexture2D( TextureDescription2D{ Dxgi::Format::D24_UNORM_S8_UINT, windowWidth, windowHeight, 1, 1, BindFlag::DepthStencil } );
+	_d3dDepthStencilView = _d3dDevice.CreateDepthStencilView( depthStencil, DepthStencilViewDescription{ DSVDimension::Texture2D } );
+
+	_d3dContext.OMSetRenderTargets( 1, &_d3dRenderTargetView, _d3dDepthStencilView );
 
 	_d2dFactory = Direct2D::CreateFactory();
 	_dwFactory = DirectWrite::CreateFactory();

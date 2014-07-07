@@ -488,6 +488,25 @@ namespace KennyKerr
 			PatchList32 = D3D11_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST,
 		};
 
+		enum class DSVDimension
+		{
+			Unknown = D3D11_DSV_DIMENSION_UNKNOWN,
+			Texture1D = D3D11_DSV_DIMENSION_TEXTURE1D,
+			Texture1DArray = D3D11_DSV_DIMENSION_TEXTURE1DARRAY,
+			Texture2D = D3D11_DSV_DIMENSION_TEXTURE2D,
+			Texture2DArray = D3D11_DSV_DIMENSION_TEXTURE2DARRAY,
+			Texture2DMS = D3D11_DSV_DIMENSION_TEXTURE2DMS,
+			Texture2DMSArray = D3D11_DSV_DIMENSION_TEXTURE2DMSARRAY
+		};
+
+		enum class DSVFlag
+		{
+			None = 0,
+			ReadOnlyDepth = D3D11_DSV_READ_ONLY_DEPTH,
+			ReadOnlyStencil = D3D11_DSV_READ_ONLY_STENCIL,
+		};
+		DEFINE_ENUM_FLAG_OPERATORS( DSVFlag );
+
 	} // Direct3D
 
 	namespace DirectComposition
@@ -1623,8 +1642,87 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( DepthStencilViewDescription, D3D11_DEPTH_STENCIL_VIEW_DESC );
 
+			explicit DepthStencilViewDescription( DSVDimension viewDimension,
+																						Dxgi::Format format = Dxgi::Format::Unknown,
+																						unsigned mipSlice = 0,
+																						unsigned firstArraySlice = 0,
+																						unsigned arraySize = -1,
+																						DSVFlag flags = DSVFlag::None )
+			{
+				Format = format;
+				ViewDimension = viewDimension;
+				Flags = flags;
+
+				switch ( viewDimension )
+				{
+				case DSVDimension::Texture1D:
+					Texture1D.MipSlice = mipSlice;
+					break;
+				case DSVDimension::Texture1DArray:
+					Texture1DArray.MipSlice = mipSlice;
+					Texture1DArray.FirstArraySlice = firstArraySlice;
+					Texture1DArray.ArraySize = arraySize;
+					break;
+				case DSVDimension::Texture2D:
+					Texture2D.MipSlice = mipSlice;
+					break;
+				case DSVDimension::Texture2DArray:
+					Texture2DArray.MipSlice = mipSlice;
+					Texture2DArray.FirstArraySlice = firstArraySlice;
+					Texture2DArray.ArraySize = arraySize;
+					break;
+				case DSVDimension::Texture2DMS:
+					break;
+				case DSVDimension::Texture2DMSArray:
+					Texture2DMSArray.FirstArraySlice = firstArraySlice;
+					Texture2DMSArray.ArraySize = arraySize;
+					break;
+				default: break;
+				}
+			}
+
+
 			Dxgi::Format Format;
-			DepthStencilViewDeminsion ViewDimension;
+			DSVDimension ViewDimension;
+			DSVFlag Flags;
+
+			union
+			{
+				struct
+				{
+					unsigned MipSlice;
+				} Texture1D;
+
+				struct
+				{
+					unsigned MipSlice;
+					unsigned FirstArraySlice;
+					unsigned ArraySize;
+				} Texture1DArray;
+
+				struct
+				{
+					unsigned MipSlice;
+				} Texture2D;
+
+				struct
+				{
+					unsigned MipSlice;
+					unsigned FirstArraySlice;
+					unsigned ArraySize;
+				} Texture2DArray;
+
+				struct
+				{
+
+				} Texture2DMS;
+
+				struct
+				{
+					unsigned FirstArraySlice;
+					unsigned ArraySize;;
+				} Texture2DMSArray;
+			};
 		};
 
 	} // Direct3D
@@ -6152,17 +6250,29 @@ namespace KennyKerr
 			return result;
 		}
 
+		inline auto Device::CreateDepthStencilView( Resource const & resource,
+																								DepthStencilViewDescription const & description ) const->DepthStencilView
+		{
+			DepthStencilView result;
+
+			HR( (*this)->CreateDepthStencilView( resource.Get(), reinterpret_cast<D3D11_DEPTH_STENCIL_VIEW_DESC const *>(&description), result.GetAddressOf() ) );
+
+			return result;
+		}
+
 		inline auto Device::CreateInputLayout( InputElementDescription const * elements,
 																					 unsigned numElements,
 																					 void const * bytecode,
 																					 size_t bytecodeLength ) const -> InputLayout
 		{
 			InputLayout result;
+
 			HR( (*this)->CreateInputLayout( reinterpret_cast<D3D11_INPUT_ELEMENT_DESC const *>(elements),
 				numElements,
 				bytecode,
 				bytecodeLength,
 				result.GetAddressOf() ) );
+
 			return result;
 		}
 

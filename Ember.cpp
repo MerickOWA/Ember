@@ -169,8 +169,6 @@ class EmberApplication : public Application
 
 		_d2dContext.FillEllipse( Direct2D::Ellipse{ Point2F{ size.Width / 2, size.Height / 2 }, 100.0, 100.0 }, _whiteBrush );
 
-		_d3dContext.OMSetRenderTargets( 1, &_d3dRenderTargetView, _d3dDepthStencilView );
-
 		_d3dContext.UpdateSubresource( _constantBuffer, &_constants );
 
 		Buffer vertexBuffers[] = { _vertexBuffer };
