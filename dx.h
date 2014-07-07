@@ -442,6 +442,52 @@ namespace KennyKerr
 			PerInstanceData = D3D11_INPUT_PER_INSTANCE_DATA,
 		};
 
+		enum class PrimitiveTopology
+		{
+			Undefined = D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED,
+			PointList = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST,
+			LineList = D3D11_PRIMITIVE_TOPOLOGY_LINELIST,
+			LineStrip = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP,
+			TriangleList = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+			TriangleStrip = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP,
+			LineListAdjacency = D3D11_PRIMITIVE_TOPOLOGY_LINELIST_ADJ,
+			LineStripAdjacency = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ,
+			TriangleListAdjacency = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ,
+			TriangleStripAdjacency = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ,
+			PatchList1 = D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST,
+			PatchList2 = D3D11_PRIMITIVE_TOPOLOGY_2_CONTROL_POINT_PATCHLIST,
+			PatchList3 = D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST,
+			PatchList4 = D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST,
+			PatchList5 = D3D11_PRIMITIVE_TOPOLOGY_5_CONTROL_POINT_PATCHLIST,
+			PatchList6 = D3D11_PRIMITIVE_TOPOLOGY_6_CONTROL_POINT_PATCHLIST,
+			PatchList7 = D3D11_PRIMITIVE_TOPOLOGY_7_CONTROL_POINT_PATCHLIST,
+			PatchList8 = D3D11_PRIMITIVE_TOPOLOGY_8_CONTROL_POINT_PATCHLIST,
+			PatchList9 = D3D11_PRIMITIVE_TOPOLOGY_9_CONTROL_POINT_PATCHLIST,
+			PatchList10 = D3D11_PRIMITIVE_TOPOLOGY_10_CONTROL_POINT_PATCHLIST,
+			PatchList11 = D3D11_PRIMITIVE_TOPOLOGY_11_CONTROL_POINT_PATCHLIST,
+			PatchList12 = D3D11_PRIMITIVE_TOPOLOGY_12_CONTROL_POINT_PATCHLIST,
+			PatchList13 = D3D11_PRIMITIVE_TOPOLOGY_13_CONTROL_POINT_PATCHLIST,
+			PatchList14 = D3D11_PRIMITIVE_TOPOLOGY_14_CONTROL_POINT_PATCHLIST,
+			PatchList15 = D3D11_PRIMITIVE_TOPOLOGY_15_CONTROL_POINT_PATCHLIST,
+			PatchList16 = D3D11_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST,
+			PatchList17 = D3D11_PRIMITIVE_TOPOLOGY_17_CONTROL_POINT_PATCHLIST,
+			PatchList18 = D3D11_PRIMITIVE_TOPOLOGY_18_CONTROL_POINT_PATCHLIST,
+			PatchList19 = D3D11_PRIMITIVE_TOPOLOGY_19_CONTROL_POINT_PATCHLIST,
+			PatchList20 = D3D11_PRIMITIVE_TOPOLOGY_20_CONTROL_POINT_PATCHLIST,
+			PatchList21 = D3D11_PRIMITIVE_TOPOLOGY_21_CONTROL_POINT_PATCHLIST,
+			PatchList22 = D3D11_PRIMITIVE_TOPOLOGY_22_CONTROL_POINT_PATCHLIST,
+			PatchList23 = D3D11_PRIMITIVE_TOPOLOGY_23_CONTROL_POINT_PATCHLIST,
+			PatchList24 = D3D11_PRIMITIVE_TOPOLOGY_24_CONTROL_POINT_PATCHLIST,
+			PatchList25 = D3D11_PRIMITIVE_TOPOLOGY_25_CONTROL_POINT_PATCHLIST,
+			PatchList26 = D3D11_PRIMITIVE_TOPOLOGY_26_CONTROL_POINT_PATCHLIST,
+			PatchList27 = D3D11_PRIMITIVE_TOPOLOGY_27_CONTROL_POINT_PATCHLIST,
+			PatchList28 = D3D11_PRIMITIVE_TOPOLOGY_28_CONTROL_POINT_PATCHLIST,
+			PatchList29 = D3D11_PRIMITIVE_TOPOLOGY_29_CONTROL_POINT_PATCHLIST,
+			PatchList30 = D3D11_PRIMITIVE_TOPOLOGY_30_CONTROL_POINT_PATCHLIST,
+			PatchList31 = D3D11_PRIMITIVE_TOPOLOGY_31_CONTROL_POINT_PATCHLIST,
+			PatchList32 = D3D11_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST,
+		};
+
 	} // Direct3D
 
 	namespace DirectComposition
@@ -1505,23 +1551,23 @@ namespace KennyKerr
 			KENNYKERR_DEFINE_STRUCT( InputElementDescription, D3D11_INPUT_ELEMENT_DESC );
 
 			explicit InputElementDescription( Dxgi::Format format = Dxgi::Format::Unknown,
-																				char const *semanticName = nullptr,
+																				char const * semanticName = nullptr,
 																				unsigned semanticIndex = 0,
 																				unsigned inputSlot = 0,
 																				unsigned alignedByteOffset = 0,
 																				InputClassification inputSlotClass = InputClassification::PerVertexData,
 																				unsigned instanceDataStepRate = 0 ) :
-																				SemanticName(semanticName),
-																				SemanticIndex(semanticIndex),
-																				Format(format),
-																				InputSlot(inputSlot),
-																				AlignedByteOffset(alignedByteOffset),
-																				InputSlotClass(inputSlotClass),
-																				InstanceDataStepRate(instanceDataStepRate)
+																				SemanticName( semanticName ),
+																				SemanticIndex( semanticIndex ),
+																				Format( format ),
+																				InputSlot( inputSlot ),
+																				AlignedByteOffset( alignedByteOffset ),
+																				InputSlotClass( inputSlotClass ),
+																				InstanceDataStepRate( instanceDataStepRate )
 			{}
 
 
-			char const *SemanticName;
+			char const * SemanticName;
 			unsigned SemanticIndex;
 			Dxgi::Format Format;
 			unsigned InputSlot;
@@ -1540,12 +1586,12 @@ namespace KennyKerr
 																	CpuAccessFlag cpuAccessFlags = CpuAccessFlag::None,
 																	ResourceMiscFlag miscFlags = ResourceMiscFlag::None,
 																	unsigned structureByteStride = 0 ) :
-																	ByteWidth(byteWidth),
-																	Usage(usage),
-																	BindFlags(bindFlags),
-																	CPUAccessFlags(cpuAccessFlags),
-																	MiscFlags(miscFlags),
-																	StructureByteStride(structureByteStride)
+																	ByteWidth( byteWidth ),
+																	Usage( usage ),
+																	BindFlags( bindFlags ),
+																	CPUAccessFlags( cpuAccessFlags ),
+																	MiscFlags( miscFlags ),
+																	StructureByteStride( structureByteStride )
 			{}
 
 			unsigned ByteWidth;
@@ -1554,6 +1600,31 @@ namespace KennyKerr
 			CpuAccessFlag CPUAccessFlags;
 			ResourceMiscFlag MiscFlags;
 			unsigned StructureByteStride;
+		};
+
+		struct SubresourceData
+		{
+			KENNYKERR_DEFINE_STRUCT( SubresourceData, D3D11_SUBRESOURCE_DATA );
+
+			explicit SubresourceData( void const * sysMem = nullptr,
+																unsigned sysMemPitch = 0,
+																unsigned sysMemSlicePitch = 0 ) :
+																SysMem( sysMem ),
+																SysMemPitch( sysMemPitch ),
+																SysMemSlicePitch( sysMemSlicePitch )
+			{}
+
+			void const * SysMem;
+			unsigned SysMemPitch;
+			unsigned SysMemSlicePitch;
+		};
+
+		struct DepthStencilViewDescription
+		{
+			KENNYKERR_DEFINE_STRUCT( DepthStencilViewDescription, D3D11_DEPTH_STENCIL_VIEW_DESC );
+
+			Dxgi::Format Format;
+			DepthStencilViewDeminsion ViewDimension;
 		};
 
 	} // Direct3D
@@ -2127,8 +2198,8 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( ArcSegment, D2D1_ARC_SEGMENT );
 
-			explicit ArcSegment( Point2F const & point = Point2F(),
-													 SizeF const & size = SizeF(),
+			explicit ArcSegment( Point2F const & point = Point2F{},
+													 SizeF const & size = SizeF{},
 													 float const rotationAngle = 0.0f,
 													 SweepDirection const sweepDirection = SweepDirection::Clockwise,
 													 ArcSize const arcSize = ArcSize::Small ) :
@@ -2150,9 +2221,9 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( BezierSegment, D2D1_BEZIER_SEGMENT );
 
-			explicit BezierSegment( Point2F const & point1 = Point2F(),
-															Point2F const & point2 = Point2F(),
-															Point2F const & point3 = Point2F() ) :
+			explicit BezierSegment( Point2F const & point1 = Point2F{},
+															Point2F const & point2 = Point2F{},
+															Point2F const & point3 = Point2F{} ) :
 															Point1( point1 ),
 															Point2( point2 ),
 															Point3( point3 )
@@ -2168,8 +2239,8 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( QuadraticBezierSegment, D2D1_QUADRATIC_BEZIER_SEGMENT );
 
-			explicit QuadraticBezierSegment( Point2F const & point1 = Point2F(),
-																			 Point2F const & point2 = Point2F() ) :
+			explicit QuadraticBezierSegment( Point2F const & point1 = Point2F{},
+																			 Point2F const & point2 = Point2F{} ) :
 																			 Point1( point1 ),
 																			 Point2( point2 )
 			{
@@ -2183,9 +2254,9 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( Triangle, D2D1_TRIANGLE );
 
-			explicit Triangle( Point2F const & point1 = Point2F(),
-												 Point2F const & point2 = Point2F(),
-												 Point2F const & point3 = Point2F() ) :
+			explicit Triangle( Point2F const & point1 = Point2F{},
+												 Point2F const & point2 = Point2F{},
+												 Point2F const & point3 = Point2F{} ) :
 												 Point1( point1 ),
 												 Point2( point2 ),
 												 Point3( point3 )
@@ -2201,7 +2272,7 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( RoundedRect, D2D1_ROUNDED_RECT );
 
-			explicit RoundedRect( RectF const & rect = RectF(),
+			explicit RoundedRect( RectF const & rect = RectF{},
 														float const radiusX = 0.0f,
 														float const radiusY = 0.0f ) :
 														Rect( rect ),
@@ -2218,7 +2289,7 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( Ellipse, D2D1_ELLIPSE );
 
-			explicit Ellipse( Point2F const & center = Point2F(),
+			explicit Ellipse( Point2F const & center = Point2F{},
 												float const radiusX = 0.0f,
 												float const radiusY = 0.0f ) :
 												Center( center ),
@@ -2297,7 +2368,7 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( ImageBrushProperties, D2D1_IMAGE_BRUSH_PROPERTIES );
 
-			explicit ImageBrushProperties( RectF const & sourceRectangle = RectF(),
+			explicit ImageBrushProperties( RectF const & sourceRectangle = RectF{},
 																		 ExtendMode const extendModeX = ExtendMode::Clamp,
 																		 ExtendMode const extendModeY = ExtendMode::Clamp,
 																		 InterpolationMode const interpolationMode = InterpolationMode::Linear ) :
@@ -2391,8 +2462,8 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( LinearGradientBrushProperties, D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES );
 
-			explicit LinearGradientBrushProperties( Point2F const & startPoint = Point2F(),
-																							Point2F const & endPoint = Point2F() ) :
+			explicit LinearGradientBrushProperties( Point2F const & startPoint = Point2F{},
+																							Point2F const & endPoint = Point2F{} ) :
 																							StartPoint( startPoint ),
 																							EndPoint( endPoint )
 			{}
@@ -2405,8 +2476,8 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( RadialGradientBrushProperties, D2D1_RADIAL_GRADIENT_BRUSH_PROPERTIES );
 
-			explicit RadialGradientBrushProperties( Point2F const & center = Point2F(),
-																							Point2F const & offset = Point2F(),
+			explicit RadialGradientBrushProperties( Point2F const & center = Point2F{},
+																							Point2F const & offset = Point2F{},
 																							float const radiusX = 0.0f,
 																							float const radiusY = 0.0f ) :
 																							Center( center ),
@@ -2542,7 +2613,7 @@ namespace KennyKerr
 			KENNYKERR_DEFINE_STRUCT( HwndRenderTargetProperties, D2D1_HWND_RENDER_TARGET_PROPERTIES );
 
 			explicit HwndRenderTargetProperties( HWND hwnd = nullptr,
-																					 SizeU const & pixelSize = SizeU(),
+																					 SizeU const & pixelSize = SizeU{},
 																					 PresentOptions const presentOptions = PresentOptions::None ) :
 																					 Hwnd( hwnd ),
 																					 PixelSize( pixelSize ),
@@ -2573,7 +2644,7 @@ namespace KennyKerr
 			KENNYKERR_DEFINE_STRUCT( RenderingControls, D2D1_RENDERING_CONTROLS );
 
 			explicit RenderingControls( BufferPrecision bufferPrecision = BufferPrecision::Unknown,
-																	SizeU const & tileSize = SizeU() ) :
+																	SizeU const & tileSize = SizeU{} ) :
 																	BufferPrecision( bufferPrecision ),
 																	TileSize( tileSize )
 			{}
@@ -2588,7 +2659,7 @@ namespace KennyKerr
 
 			explicit EffectInputDescription( ID2D1Effect * effect = nullptr,
 																			 unsigned const inputIndex = 0,
-																			 RectF const & inputRectangle = RectF() ) :
+																			 RectF const & inputRectangle = RectF{} ) :
 																			 Effect( effect ),
 																			 InputIndex( inputIndex ),
 																			 InputRectangle( inputRectangle )
@@ -2603,8 +2674,8 @@ namespace KennyKerr
 		{
 			KENNYKERR_DEFINE_STRUCT( PointDescription, D2D1_POINT_DESCRIPTION );
 
-			explicit PointDescription( Point2F const & point = Point2F(),
-																 Point2F const & unitTangentVector = Point2F(),
+			explicit PointDescription( Point2F const & point = Point2F{},
+																 Point2F const & unitTangentVector = Point2F{},
 																 unsigned const endSegment = 0,
 																 unsigned const endFigure = 0,
 																 float const lengthToEndSegment = 0.0f ) :
@@ -2654,6 +2725,7 @@ namespace KennyKerr
 	namespace Direct3D
 	{
 		struct Device;
+		struct Texture2D;
 	} // Direct3D
 
 #pragma endregion Forward declarations
@@ -2681,6 +2753,8 @@ namespace KennyKerr
 		struct __declspec(uuid("cafcb56c-6ac3-4889-bf47-9e23bbd260ec")) Surface : Details::Object
 		{
 			KENNYKERR_DEFINE_CLASS( Surface, Details::Object, IDXGISurface );
+
+			auto AsDirect3DTexture2D() const->Direct3D::Texture2D;
 		};
 
 		struct SwapChain : Details::Object
@@ -2717,16 +2791,16 @@ namespace KennyKerr
 
 			auto CreateSwapChainForHwnd( Details::Object const & device, // Direct3D or Dxgi Device
 																	 HWND window,
-																	 SwapChainDescription1 const & description = SwapChainDescription1() ) const->SwapChain1;
+																	 SwapChainDescription1 const & description = SwapChainDescription1{} ) const->SwapChain1;
 
 			auto CreateSwapChainForCoreWindow( Details::Object const & device, // Direct3D or Dxgi Device
 																				 IUnknown * window,
-																				 SwapChainDescription1 const & description = SwapChainDescription1() ) const->SwapChain1;
+																				 SwapChainDescription1 const & description = SwapChainDescription1{} ) const->SwapChain1;
 
 #ifdef __cplusplus_winrt
-			auto CreateSwapChainForCoreWindow(Details::Object const & device, // Direct3D or Dxgi Device
+			auto CreateSwapChainForCoreWindow( Details::Object const & device, // Direct3D or Dxgi Device
 																				 Windows::UI::Core::CoreWindow ^ window,
-																				 SwapChainDescription1 const & description = SwapChainDescription1()) const -> SwapChain1;
+																				 SwapChainDescription1 const & description = SwapChainDescription1{} ) const -> SwapChain1;
 #endif
 
 			auto CreateSwapChainForComposition( Details::Object const & device, // Direct3D or Dxgi Device
@@ -2807,16 +2881,19 @@ namespace KennyKerr
 			auto AsDxgiResource() const->Dxgi::Resource;
 		};
 
-		struct DeviceContext : Details::Object
+		struct PixelShader : DeviceChild
 		{
-			KENNYKERR_DEFINE_CLASS( DeviceContext, Details::Object, ID3D11DeviceContext );
-
-			void Flush() const;
+			KENNYKERR_DEFINE_CLASS( PixelShader, DeviceChild, ID3D11PixelShader );
 		};
 
-		struct DeviceContext1 : DeviceContext
+		struct VertexShader : DeviceChild
 		{
-			KENNYKERR_DEFINE_CLASS( DeviceContext1, DeviceContext, ID3D11DeviceContext1 );
+			KENNYKERR_DEFINE_CLASS( VertexShader, DeviceChild, ID3D11VertexShader );
+		};
+
+		struct InputLayout : DeviceChild
+		{
+			KENNYKERR_DEFINE_CLASS( InputLayout, DeviceChild, ID3D11InputLayout );
 		};
 
 		struct View : Details::Object
@@ -2834,19 +2911,49 @@ namespace KennyKerr
 			KENNYKERR_DEFINE_CLASS( DepthStencilView, View, ID3D11DepthStencilView );
 		};
 
-		struct PixelShader : DeviceChild
+		struct DeviceContext : Details::Object
 		{
-			KENNYKERR_DEFINE_CLASS( PixelShader, DeviceChild, ID3D11PixelShader );
+			KENNYKERR_DEFINE_CLASS( DeviceContext, Details::Object, ID3D11DeviceContext );
+
+			void Flush() const;
+
+			void DrawIndexed( unsigned indexCount,
+												unsigned startIndexLocation = 0,
+												int baseVertexLocation = 0 ) const;
+
+			void IASetPrimitiveTopology( PrimitiveTopology topology ) const;
+
+			void IASetIndexBuffer( Buffer const & indexBuffer,
+														 Dxgi::Format format = Dxgi::Format::R16_UINT,
+														 unsigned offset = 0 ) const;
+
+			void IASetInputLayout( InputLayout const & inputLayout ) const;
+
+			void IASetVertexBuffers( unsigned startSlot,
+															 unsigned numBuffers,
+															 Buffer const * vertexBuffers,
+															 unsigned const * strides,
+															 unsigned const * offsets ) const;
+
+			void OMSetRenderTargets( unsigned numViews,
+															 RenderTargetView const *renderTargetViews,
+															 DepthStencilView depthStencilView ) const;
+
+			void PSSetShader( PixelShader const & pixelShader ) const;
+
+			void UpdateSubresource( Resource & dstResource,
+															void const * srcData ) const;
+
+			void VSSetConstantBuffers( unsigned startSlot,
+																 unsigned numBuffers,
+																 Buffer const *constantBuffers ) const;
+
+			void VSSetShader( VertexShader const & vertexShader ) const;
 		};
 
-		struct VertexShader : DeviceChild
+		struct DeviceContext1 : DeviceContext
 		{
-			KENNYKERR_DEFINE_CLASS( VertexShader, DeviceChild, ID3D11VertexShader );
-		};
-
-		struct InputLayout : DeviceChild
-		{
-			KENNYKERR_DEFINE_CLASS( InputLayout, DeviceChild, ID3D11InputLayout );
+			KENNYKERR_DEFINE_CLASS( DeviceContext1, DeviceContext, ID3D11DeviceContext1 );
 		};
 
 		struct Device : Details::Object
@@ -2857,11 +2964,30 @@ namespace KennyKerr
 			auto AsMultiThread() const->MultiThread;
 			auto GetDxgiFactory() const->Dxgi::Factory2;
 
-			auto CreateBuffer( BufferDescription const &description ) const->Buffer;
-			auto CreateInputLayout( InputElementDescription const *elements, unsigned numElements, void const *bytecode, size_t bytecodeLength ) const->InputLayout;
-			auto CreatePixelShader( void const * bytecode, size_t bytecodeLength ) const->PixelShader;
+			auto CreateBuffer( BufferDescription const & description ) const->Buffer;
+
+			auto CreateBuffer( BufferDescription const & description,
+												 SubresourceData const & initalData ) const->Buffer;
+
+			auto CreateDepthStencilView( Resource const & resource,
+																	 DepthStencilViewDescription const & description ) const->DepthStencilView;
+
+			auto CreateInputLayout( InputElementDescription const * elements,
+															unsigned numElements,
+															void const * bytecode,
+															size_t bytecodeLength ) const->InputLayout;
+
+			auto CreatePixelShader( void const * bytecode,
+															size_t bytecodeLength ) const->PixelShader;
+
+			auto CreateRenderTargetView( Resource const & resource ) const->RenderTargetView;
+			auto CreateRenderTargetView( Dxgi::SwapChain const & swapChain ) const->RenderTargetView;
+
 			auto CreateTexture2D( TextureDescription2D const & description ) const->Texture2D;
-			auto CreateVertexShader( void const * bytecode, size_t bytecodeLength ) const->VertexShader;
+
+			auto CreateVertexShader( void const * bytecode,
+															 size_t bytecodeLength ) const->VertexShader;
+
 			auto GetImmediateContext() const->DeviceContext;
 			auto OpenSharedResource( HANDLE resource ) const->Dxgi::Surface;
 			auto OpenSharedResource( Dxgi::Resource const & resource ) const->Dxgi::Surface;
@@ -5471,7 +5597,7 @@ namespace KennyKerr
 																		DirectWrite::RenderingParams const & params ) const->DrawingStateBlock;
 
 			auto CreateWicBitmapRenderTarget( Wic::Bitmap const & target,
-																				RenderTargetProperties const & properties = RenderTargetProperties() ) const->RenderTarget;
+																				RenderTargetProperties const & properties = RenderTargetProperties{} ) const->RenderTarget;
 
 #if WINAPI_FAMILY_DESKTOP_APP == WINAPI_FAMILY
 			auto CreateHwndRenderTarget( RenderTargetProperties const & renderTargetProperties,
@@ -5686,6 +5812,13 @@ namespace KennyKerr
 
 	namespace Dxgi
 	{
+		inline auto Surface::AsDirect3DTexture2D() const -> Direct3D::Texture2D
+		{
+			Direct3D::Texture2D result;
+			HR( m_ptr.CopyTo( result.GetAddressOf() ) );
+			return result;
+		}
+
 		inline auto SwapChain::Present( unsigned const sync,
 																		Dxgi::Present const flags ) const -> HRESULT
 		{
@@ -5894,6 +6027,90 @@ namespace KennyKerr
 			(*this)->Flush();
 		}
 
+		inline void DeviceContext::DrawIndexed( unsigned indexCount,
+																						unsigned startIndexLocation,
+																						int baseVertexLocation ) const
+		{
+			(*this)->DrawIndexed( indexCount,
+														startIndexLocation,
+														baseVertexLocation );
+		}
+
+		inline void DeviceContext::IASetPrimitiveTopology( PrimitiveTopology topology ) const
+		{
+			(*this)->IASetPrimitiveTopology( static_cast<D3D11_PRIMITIVE_TOPOLOGY>(topology) );
+		}
+
+		inline void DeviceContext::IASetIndexBuffer( Buffer const & indexBuffer,
+																								 Dxgi::Format format,
+																								 unsigned offset ) const
+		{
+			(*this)->IASetIndexBuffer( indexBuffer.Get(),
+																 static_cast<DXGI_FORMAT>(format),
+																 offset );
+		}
+
+		inline void DeviceContext::IASetInputLayout( InputLayout const & inputLayout ) const
+		{
+			(*this)->IASetInputLayout( inputLayout.Get() );
+		}
+
+		inline void DeviceContext::IASetVertexBuffers( unsigned startSlot,
+																									 unsigned numBuffers,
+																									 Buffer const * vertexBuffers,
+																									 unsigned const * strides,
+																									 unsigned const * offsets ) const
+		{
+			(*this)->IASetVertexBuffers( startSlot,
+																	 numBuffers,
+																	 reinterpret_cast<ID3D11Buffer *const *>(vertexBuffers),
+																	 strides,
+																	 offsets );
+		}
+
+		inline void DeviceContext::OMSetRenderTargets( unsigned numViews,
+																									 RenderTargetView const *renderTargetViews,
+																									 DepthStencilView depthStencilView ) const
+		{
+			(*this)->OMSetRenderTargets( numViews,
+																	 reinterpret_cast<ID3D11RenderTargetView *const *>(renderTargetViews),
+																	 depthStencilView.Get() );
+		}
+
+		inline void DeviceContext::PSSetShader( PixelShader const & pixelShader ) const
+		{
+			(*this)->PSSetShader( pixelShader.Get(),
+														nullptr,
+														0 );
+		}
+
+		inline void DeviceContext::UpdateSubresource( Resource & dstResource,
+																									void const * srcData ) const
+		{
+			(*this)->UpdateSubresource( dstResource.Get(),
+																	0,
+																	nullptr,
+																	srcData,
+																	0,
+																	0 );
+		}
+
+		inline void DeviceContext::VSSetConstantBuffers( unsigned startSlot,
+																										 unsigned numBuffers,
+																										 Buffer const *constantBuffers ) const
+		{
+			(*this)->VSSetConstantBuffers( startSlot,
+																		 numBuffers,
+																		 reinterpret_cast<ID3D11Buffer *const *>(constantBuffers) );
+		}
+
+		inline void DeviceContext::VSSetShader( VertexShader const & vertexShader ) const
+		{
+			(*this)->VSSetShader( vertexShader.Get(),
+														nullptr,
+														0 );
+		}
+
 		inline auto Device::AsDxgi() const -> Dxgi::Device2
 		{
 			Dxgi::Device2 result;
@@ -5913,7 +6130,7 @@ namespace KennyKerr
 			return AsDxgi().GetAdapter().GetParent();
 		}
 
-		inline auto Device::CreateBuffer( BufferDescription const &description ) const -> Buffer
+		inline auto Device::CreateBuffer( BufferDescription const & description ) const -> Buffer
 		{
 			Buffer result;
 
@@ -5924,18 +6141,33 @@ namespace KennyKerr
 			return result;
 		}
 
-		inline auto Device::CreateInputLayout(InputElementDescription const *elements, unsigned numElements, void const *bytecode, size_t bytecodeLength) const -> InputLayout
+		inline auto Device::CreateBuffer( BufferDescription const & description, SubresourceData const & initalData ) const -> Buffer
 		{
-			InputLayout result;
-			HR( (*this)->CreateInputLayout( reinterpret_cast<D3D11_INPUT_ELEMENT_DESC const *>(elements),
-																	numElements,
-																	bytecode,
-																	bytecodeLength,
-																	result.GetAddressOf() ) );
+			Buffer result;
+
+			HR( (*this)->CreateBuffer( reinterpret_cast<D3D11_BUFFER_DESC const *>(&description),
+				reinterpret_cast<D3D11_SUBRESOURCE_DATA const *>(&initalData),
+				result.GetAddressOf() ) );
+
 			return result;
 		}
 
-		inline auto Device::CreatePixelShader( void const * bytecode, size_t bytecodeLength ) const -> PixelShader
+		inline auto Device::CreateInputLayout( InputElementDescription const * elements,
+																					 unsigned numElements,
+																					 void const * bytecode,
+																					 size_t bytecodeLength ) const -> InputLayout
+		{
+			InputLayout result;
+			HR( (*this)->CreateInputLayout( reinterpret_cast<D3D11_INPUT_ELEMENT_DESC const *>(elements),
+				numElements,
+				bytecode,
+				bytecodeLength,
+				result.GetAddressOf() ) );
+			return result;
+		}
+
+		inline auto Device::CreatePixelShader( void const * bytecode,
+																					 size_t bytecodeLength ) const -> PixelShader
 		{
 			PixelShader result;
 
@@ -5945,6 +6177,22 @@ namespace KennyKerr
 				result.GetAddressOf() ) );
 
 			return result;
+		}
+
+		inline auto Device::CreateRenderTargetView( Resource const & resource ) const -> RenderTargetView
+		{
+			RenderTargetView result;
+
+			HR( (*this)->CreateRenderTargetView( resource.Get(),
+				nullptr,
+				result.GetAddressOf() ) );
+
+			return result;
+		}
+
+		inline auto Device::CreateRenderTargetView( Dxgi::SwapChain const & swapChain ) const->RenderTargetView
+		{
+			return CreateRenderTargetView( swapChain.GetBuffer().AsDirect3DTexture2D() );
 		}
 
 		inline auto Device::CreateTexture2D( TextureDescription2D const & description ) const -> Texture2D
@@ -5958,7 +6206,8 @@ namespace KennyKerr
 			return result;
 		}
 
-		inline auto Device::CreateVertexShader( void const * bytecode, size_t bytecodeLength ) const -> VertexShader
+		inline auto Device::CreateVertexShader( void const * bytecode,
+																						size_t bytecodeLength ) const -> VertexShader
 		{
 			VertexShader result;
 

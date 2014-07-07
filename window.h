@@ -147,21 +147,31 @@ namespace Win32
 	public:
 
 		Window( HWND hwnd = nullptr )
-			: handle( hwnd )
+			: _handle( hwnd )
 		{
 		}
 
 		void Destroy()
 		{
-			DestroyWindow( this->handle );
+			DestroyWindow( _handle );
 		}
 
-		HWND Get() const {
-			return this->handle;
+		HWND Get() const
+		{
+			return _handle;
+		}
+
+		RECT GetClientRect() const
+		{
+			RECT result;
+
+			::GetClientRect( _handle, &result );
+
+			return result;
 		}
 
 	private:
-		HWND handle;
+		HWND _handle;
 	};
 
 	class WindowCreation

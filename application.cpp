@@ -23,8 +23,9 @@ int Application::Run( HINSTANCE hinst, LPCTSTR title )
 	.Create();
 
 		InitializeDX();
-		CreateDeviceIndependentResources();
-		CreateDeviceResources();
+		Initialize();
+		OnDeviceAquired();
+		_initialized = true;
 
 		auto timer = high_resolution_clock{};
 		auto timerStart = timer.now(),
@@ -54,6 +55,10 @@ void Application::Exit( int exitCode )
 
 void Application::InitializeDX()
 {
+	auto windowRect = _window.GetClientRect();
+	auto windowWidth = static_cast<unsigned>(windowRect.right);
+	auto windowHeight = static_cast<unsigned>(windowRect.bottom);
+
 	_d3dDevice = Direct3D::CreateDevice();
 	_d3dContext = _d3dDevice.GetImmediateContext();
 
@@ -63,6 +68,10 @@ void Application::InitializeDX()
 	auto dxgiFactory = _d3dDevice.GetDxgiFactory();
 	_swapChain = dxgiFactory.CreateSwapChainForHwnd( _d3dDevice, _window.Get(), description );
 
+	_d3dRenderTargetView = _d3dDevice.CreateRenderTargetView( _swapChain );
+
+	auto depthStencil = _d3dDevice.CreateTexture2D( TextureDescription2D{ Dxgi::Format::D24_UNORM_S8_UINT, windowWidth, windowHeight, 1, 1, BindFlag::DepthStencil } );
+
 	_d2dFactory = Direct2D::CreateFactory();
 	_dwFactory = DirectWrite::CreateFactory();
 
@@ -71,17 +80,15 @@ void Application::InitializeDX()
 
 	_d2dDevice = _d2dFactory.CreateDevice( _d3dDevice );
 	_d2dContext = _d2dDevice.CreateDeviceContext();
+
 	_d2dContext.SetTarget( _d2dContext.CreateBitmapFromDxgiSurface( _swapChain ) );
 }
 
 void Application::OnWindowChanged()
 {
-	if ( _swapChain )
-	{
-		_d2dContext.SetTarget();
-		_swapChain.ResizeBuffers();
-		_d2dContext.SetTarget( _d2dContext.CreateBitmapFromDxgiSurface( _swapChain ) );
-	}
+	_d2dContext.SetTarget();
+	_swapChain.ResizeBuffers();
+	_d2dContext.SetTarget( _d2dContext.CreateBitmapFromDxgiSurface( _swapChain ) );
 }
 
 LRESULT Application::WndProc( HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam )
@@ -93,11 +100,17 @@ LRESULT Application::WndProc( HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam 
 		return 0;
 
 	case WM_SIZE:
-		OnWindowChanged();
+		if ( _initialized )
+		{
+			OnWindowChanged();
+		}
 		break;
 
 	case WM_PAINT:
-		Draw();
+		if ( _initialized )
+		{
+			Draw();
+		}
 		break;
 
 	default:
