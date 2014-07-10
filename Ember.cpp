@@ -38,6 +38,7 @@ class EmberApplication : public Application
     SolidColorBrush _whiteBrush;
     VertexShader _vertexShader;
     InputLayout _inputLayout;
+    GeometryShader _geometryShader;
     PixelShader _pixelShader;
     Buffer _constantBuffer;
     Buffer _vertexBuffer;
@@ -67,6 +68,11 @@ class EmberApplication : public Application
 
             _vertexShader = _d3dDevice.CreateVertexShader(file.begin(), file.size());
             _inputLayout = _d3dDevice.CreateInputLayout(vertexDesc, _countof(vertexDesc), file.begin(), file.size());
+        }
+
+        {
+            fileview file("SimpleGS.cso");
+            _geometryShader = _d3dDevice.CreateGeometryShader(file.begin(), file.size());
         }
 
         {
@@ -189,6 +195,8 @@ class EmberApplication : public Application
         _d3dContext.VSSetShader(_vertexShader);
 
         _d3dContext.VSSetConstantBuffers(0, 1, &_constantBuffer);
+
+        _d3dContext.GSSetShader(_geometryShader);
 
         _d3dContext.PSSetShader(_pixelShader);
 

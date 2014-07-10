@@ -3091,6 +3091,10 @@ namespace KennyKerr
             KENNYKERR_DEFINE_CLASS(InputLayout, DeviceChild, ID3D11InputLayout)
         };
 
+        struct GeometryShader : DeviceChild
+        {
+            KENNYKERR_DEFINE_CLASS(GeometryShader, DeviceChild, ID3D11GeometryShader)
+        };
 
         struct DeviceContext : Details::Object
         {
@@ -3109,6 +3113,8 @@ namespace KennyKerr
             void DrawIndexed(unsigned indexCount,
                              unsigned startIndexLocation = 0,
                              int baseVertexLocation      = 0) const;
+
+            void GSSetShader(GeometryShader const & geometryShader) const;
 
             void IASetPrimitiveTopology(PrimitiveTopology topology) const;
 
@@ -3185,6 +3191,9 @@ namespace KennyKerr
                                    unsigned numElements,
                                    void const * bytecode,
                                    size_t bytecodeLength) const -> InputLayout;
+
+            auto CreateGeometryShader(void const * bytecode,
+                                      size_t bytecodeLength) const -> GeometryShader;
 
             auto CreatePixelShader(void const * bytecode,
                                    size_t bytecodeLength) const -> PixelShader;
@@ -6305,6 +6314,13 @@ namespace KennyKerr
                                  baseVertexLocation);
         }
 
+        inline void DeviceContext::GSSetShader(GeometryShader const & geometryShader) const
+        {
+            (*this)->GSSetShader(geometryShader.Get(),
+                                 nullptr,
+                                 0);
+        }
+
         inline void DeviceContext::IASetPrimitiveTopology(PrimitiveTopology topology) const
         {
             (*this)->IASetPrimitiveTopology(static_cast<D3D11_PRIMITIVE_TOPOLOGY>(topology));
@@ -6464,6 +6480,21 @@ namespace KennyKerr
 
             return result;
         }
+
+
+        inline auto Device::CreateGeometryShader(void const * bytecode,
+                                                 size_t bytecodeLength) const -> GeometryShader
+        {
+            GeometryShader result;
+
+            HR((*this)->CreateGeometryShader(bytecode,
+                bytecodeLength,
+                nullptr,
+                result.GetAddressOf()));
+
+            return result;
+        }
+
 
         inline auto Device::CreatePixelShader(void const * bytecode,
                                               size_t bytecodeLength) const -> PixelShader
