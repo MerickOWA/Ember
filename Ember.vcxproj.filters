@@ -75,9 +75,6 @@
     <FxCompile Include="SimplePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="TesselateSphereGS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="SimpleGS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
