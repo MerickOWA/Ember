@@ -553,6 +553,19 @@ namespace KennyKerr
             _11_1   = D3D_FEATURE_LEVEL_11_1,
         };
 
+        enum class FillMode
+        {
+            Wireframe = D3D11_FILL_WIREFRAME,
+            Solid = D3D11_FILL_SOLID,
+        };
+
+        enum class CullMode
+        {
+            None = D3D11_CULL_NONE,
+            Front = D3D11_CULL_FRONT,
+            Back = D3D11_CULL_BACK,
+        };
+
     } // Direct3D
     
     namespace DirectComposition
@@ -1808,6 +1821,44 @@ namespace KennyKerr
 
             char const * Name;
             char const * Definition;
+        };
+
+        struct RasterizerDescription
+        {
+            KENNYKERR_DEFINE_STRUCT(RasterizerDescription, D3D11_RASTERIZER_DESC)
+
+            explicit RasterizerDescription(FillMode fillMode          = FillMode::Solid,
+                                           CullMode cullMode          = CullMode::Back,
+                                           bool frontCounterClockwize = false,
+                                           int depthBias              = 0,
+                                           float depthBiasClamp       = 0.0f,
+                                           float slopeScaledDepthBias = 0.0f,
+                                           bool depthClipEnabled      = true,
+                                           bool scissorEnable         = false,
+                                           bool multisampleEnable     = false,
+                                           bool antialiasedLineEnable = false) :
+                FillMode(fillMode),
+                CullMode(cullMode),
+                FrontCounterClockwise(frontCounterClockwize),
+                DepthBias(depthBias),
+                DepthBiasClamp(depthBiasClamp),
+                SlopeScaledDepthBias(slopeScaledDepthBias),
+                DepthClipEnable(depthClipEnabled),
+                ScissorEnable(scissorEnable),
+                MultisampleEnable(multisampleEnable),
+                AntialiasedLineEnable(antialiasedLineEnable)
+            {}
+
+            FillMode FillMode;
+            CullMode CullMode;
+            BOOL     FrontCounterClockwise;
+            int      DepthBias;
+            float    DepthBiasClamp;
+            float    SlopeScaledDepthBias;
+            BOOL     DepthClipEnable;
+            BOOL     ScissorEnable;
+            BOOL     MultisampleEnable;
+            BOOL     AntialiasedLineEnable;
         };
 
     } // Direct3D
@@ -3096,6 +3147,13 @@ namespace KennyKerr
             KENNYKERR_DEFINE_CLASS(GeometryShader, DeviceChild, ID3D11GeometryShader)
         };
 
+        struct RasterizerState : DeviceChild
+        {
+            KENNYKERR_DEFINE_CLASS(RasterizerState, DeviceChild, ID3D11RasterizerState)
+
+            auto GetDesc() const -> RasterizerDescription;
+        };
+
         struct DeviceContext : Details::Object
         {
             KENNYKERR_DEFINE_CLASS(DeviceContext, Details::Object, ID3D11DeviceContext)
@@ -3136,6 +3194,8 @@ namespace KennyKerr
                                     DepthStencilView depthStencilView) const;
 
             void PSSetShader(PixelShader const & pixelShader) const;
+
+            void RSSetState(RasterizerState const & rasterizerState) const;
 
             void RSSetViewports(unsigned numViewports,
                                 ViewPort const * viewports) const;
@@ -3197,6 +3257,8 @@ namespace KennyKerr
 
             auto CreatePixelShader(void const * bytecode,
                                    size_t bytecodeLength) const -> PixelShader;
+
+            auto CreateRasterizerState(RasterizerDescription const & description) const -> RasterizerState;
 
             auto CreateRenderTargetView(Resource const & resource) const -> RenderTargetView;
             auto CreateRenderTargetView(Dxgi::SwapChain const & swapChain) const -> RenderTargetView;
@@ -6291,13 +6353,17 @@ namespace KennyKerr
                                                          float depth,
                                                          unsigned char stencil) const
         {
-            (*this)->ClearDepthStencilView(depthStencilView.Get(), static_cast<D3D11_CLEAR_FLAG>(clearFlags), depth, stencil);
+            (*this)->ClearDepthStencilView(depthStencilView.Get(),
+                                           static_cast<D3D11_CLEAR_FLAG>(clearFlags),
+                                           depth,
+                                           stencil);
         }
 
         inline void DeviceContext::ClearRenderTargetView(RenderTargetView const & renderTargetView,
                                                          Color const & color) const
         {
-            (*this)->ClearRenderTargetView(renderTargetView.Get(), reinterpret_cast<FLOAT const *>(&color));
+            (*this)->ClearRenderTargetView(renderTargetView.Get(),
+                                           reinterpret_cast<FLOAT const *>(&color));
         }
 
         inline void DeviceContext::Flush() const
@@ -6374,6 +6440,11 @@ namespace KennyKerr
                                  0);
         }
 
+        inline void DeviceContext::RSSetState(RasterizerState const & rasterizerState) const
+        {
+            (*this)->RSSetState(rasterizerState.Get());
+        }
+
         inline void DeviceContext::RSSetViewports(unsigned numViewports,
                                                   ViewPort const * viewports) const
         {
@@ -6436,7 +6507,7 @@ namespace KennyKerr
         {
             Buffer result;
 
-            HR((*this)->CreateBuffer(reinterpret_cast<D3D11_BUFFER_DESC const *>(&description),
+            HR((*this)->CreateBuffer(description.Get(),
                                      nullptr,
                                      result.GetAddressOf()));
 
@@ -6448,8 +6519,8 @@ namespace KennyKerr
         {
             Buffer result;
 
-            HR((*this)->CreateBuffer(reinterpret_cast<D3D11_BUFFER_DESC const *>(&description),
-                                     reinterpret_cast<D3D11_SUBRESOURCE_DATA const *>(&initalData),
+            HR((*this)->CreateBuffer(description.Get(),
+                                     initalData.Get(),
                                      result.GetAddressOf()));
 
             return result;
@@ -6460,7 +6531,9 @@ namespace KennyKerr
         {
             DepthStencilView result;
 
-            HR((*this)->CreateDepthStencilView(resource.Get(), reinterpret_cast<D3D11_DEPTH_STENCIL_VIEW_DESC const *>(&description), result.GetAddressOf()));
+            HR((*this)->CreateDepthStencilView(resource.Get(),
+                                               description.Get(),
+                                               result.GetAddressOf()));
 
             return result;
         }
@@ -6473,10 +6546,10 @@ namespace KennyKerr
             InputLayout result;
 
             HR((*this)->CreateInputLayout(reinterpret_cast<D3D11_INPUT_ELEMENT_DESC const *>(elements),
-                numElements,
-                bytecode,
-                bytecodeLength,
-                result.GetAddressOf()));
+                                          numElements,
+                                          bytecode,
+                                          bytecodeLength,
+                                          result.GetAddressOf()));
 
             return result;
         }
@@ -6488,9 +6561,9 @@ namespace KennyKerr
             GeometryShader result;
 
             HR((*this)->CreateGeometryShader(bytecode,
-                bytecodeLength,
-                nullptr,
-                result.GetAddressOf()));
+                                             bytecodeLength,
+                                             nullptr,
+                                             result.GetAddressOf()));
 
             return result;
         }
@@ -6502,9 +6575,19 @@ namespace KennyKerr
             PixelShader result;
 
             HR((*this)->CreatePixelShader(bytecode,
-                bytecodeLength,
-                nullptr,
-                result.GetAddressOf()));
+                                          bytecodeLength,
+                                          nullptr,
+                                          result.GetAddressOf()));
+
+            return result;
+        }
+
+        inline auto Device::CreateRasterizerState(RasterizerDescription const & description) const -> RasterizerState
+        {
+            RasterizerState result;
+
+            HR((*this)->CreateRasterizerState(description.Get(),
+                                              result.GetAddressOf()));
 
             return result;
         }
@@ -6514,8 +6597,8 @@ namespace KennyKerr
             RenderTargetView result;
 
             HR((*this)->CreateRenderTargetView(resource.Get(),
-                nullptr,
-                result.GetAddressOf()));
+                                               nullptr,
+                                               result.GetAddressOf()));
 
             return result;
         }

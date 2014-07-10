@@ -34,8 +34,7 @@ struct VertexPositionColor
 
 class EmberApplication : public Application
 {
-    TextFormat _textFormat;
-    SolidColorBrush _whiteBrush;
+    RasterizerState _rasterizerState;
     VertexShader _vertexShader;
     InputLayout _inputLayout;
     GeometryShader _geometryShader;
@@ -48,14 +47,13 @@ class EmberApplication : public Application
 
     void Initialize() override
     {
-        _textFormat = _dwFactory.CreateTextFormat(L"Candara", 100.0f);
     }
 
     void OnDeviceAquired() override
     {
         __super::OnDeviceAquired();
 
-        _whiteBrush = _d2dContext.CreateSolidColorBrush(COLOR_WHITE);
+        _rasterizerState = _d3dDevice.CreateRasterizerState(RasterizerDescription{ Direct3D::FillMode::Wireframe });
 
         {
             fileview file("SimpleVS.cso");
@@ -180,6 +178,8 @@ class EmberApplication : public Application
         _d3dContext.ClearDepthStencilView(_d3dDepthStencilView);
 
         _d3dContext.UpdateSubresource(_constantBuffer, &_constants);
+
+        _d3dContext.RSSetState(_rasterizerState);
 
         Buffer vertexBuffers[] = { _vertexBuffer };
         unsigned strides[] = { sizeof(VertexPositionColor) };
