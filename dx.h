@@ -5999,9 +5999,9 @@ namespace KennyKerr
 
     namespace DirectWrite
     {
-        inline auto CreateFactory(FactoryType type = FactoryType::Shared) -> Factory2
+        inline auto CreateFactory(FactoryType type = FactoryType::Shared) -> Factory1
         {
-            Factory2 result;
+            Factory1 result;
 
             HR(DWriteCreateFactory(static_cast<DWRITE_FACTORY_TYPE>(type),
                                    __uuidof(result),

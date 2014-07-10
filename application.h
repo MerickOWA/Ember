@@ -39,7 +39,7 @@ protected:
 	KennyKerr::Direct2D::Device _d2dDevice;
 	KennyKerr::Direct2D::DeviceContext _d2dContext;
 
-	KennyKerr::DirectWrite::Factory2 _dwFactory;
+	KennyKerr::DirectWrite::Factory1 _dwFactory;
 
 	KennyKerr::Dxgi::SwapChain1 _swapChain;
 
